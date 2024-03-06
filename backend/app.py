@@ -142,6 +142,26 @@ def borrow_book():
 
     return jsonify({'message': 'Book borrowed successfully'})
 
+
+@app.route('/search', methods=['POST'])
+def search():
+    try:
+        data = request.get_json()
+        title = data.get('title', '')
+        author = data.get('author', '')
+
+        # Construct the API URL with the provided title and author
+        api_url = f'https://frappe.io/api/method/frappe-library?title={title}&authors={author}'
+
+        # Make the API request to frappe-library
+        response = requests.get(api_url)
+        results = response.json()
+
+        return jsonify({'message': results})
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
 # Route to return a book
 @app.route('/return', methods=['POST'])
 def return_book():
